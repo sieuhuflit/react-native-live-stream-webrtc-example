@@ -32,7 +32,7 @@ const emitListServer = () => {
 
 const connect = () => {
   socket = io.connect(
-    'http://192.168.1.107:4443',
+    'http://192.168.10.155:4443',
     { transports: ['websocket'] }
   );
 };
@@ -41,11 +41,17 @@ const join = (roomId, displayName) => {
   socket.emit('join-server', { roomId, displayName }, friendList => {
     console.log('join-server', friendList);
     friends = friendList;
-    for (const i in friendList) {
-      const friend = friendList[i];
+    if (friendList.length > 0) {
+      const friend = friendList[0];
       const socketId = friend.socketId;
+      Utils.setStreamerSocketId(socketId);
       PeerConnectionUtils.createPC(socketId, true);
     }
+    // for (const i in friendList) {
+    //   const friend = friendList[i];
+    //   const socketId = friend.socketId;
+    //   PeerConnectionUtils.createPC(socketId, true);
+    // }
   });
 };
 

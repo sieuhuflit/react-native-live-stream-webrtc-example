@@ -127,41 +127,45 @@ const exchange = data => {
   const pcPeers = PeerConnectionUtils.getPeers();
   const fromId = data.from;
   let pc;
-  if (fromId in pcPeers) {
-    pc = pcPeers[fromId];
-  } else {
-    pc = createPC(fromId, false);
-  }
-
-  if (data.sdp) {
-    console.log('exchange sdp', data);
-    pc.setRemoteDescription(
-      new RTCSessionDescription(data.sdp),
-      () => {
-        if (pc.remoteDescription.type == 'offer')
-          pc.createAnswer(
-            desc => {
-              console.log('createAnswer', desc);
-              pc.setLocalDescription(
-                desc,
-                () => {
-                  console.log('setLocalDescription', pc.localDescription);
-                  SocketUtils.emitExchangeServerSdp(
-                    fromId,
-                    pc.localDescription
-                  );
-                },
-                error => console.log('error : ' + error)
-              );
-            },
-            error => console.log('error : ' + error)
-          );
-      },
-      error => console.log('error : ' + error)
-    );
-  } else {
-    console.log('exchange candidate', data);
-    pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+  if (
+    fromId === Utils.getStreamerSocketId() ||
+    Utils.getStreamerSocketId() === null
+  ) {
+    if (fromId in pcPeers) {
+      pc = pcPeers[fromId];
+    } else {
+      pc = createPC(fromId, false);
+    }
+    if (data.sdp) {
+      console.log('exchange sdp', data);
+      pc.setRemoteDescription(
+        new RTCSessionDescription(data.sdp),
+        () => {
+          if (pc.remoteDescription.type == 'offer')
+            pc.createAnswer(
+              desc => {
+                console.log('createAnswer', desc);
+                pc.setLocalDescription(
+                  desc,
+                  () => {
+                    console.log('setLocalDescription', pc.localDescription);
+                    SocketUtils.emitExchangeServerSdp(
+                      fromId,
+                      pc.localDescription
+                    );
+                  },
+                  error => console.log('error : ' + error)
+                );
+              },
+              error => console.log('error : ' + error)
+            );
+        },
+        error => console.log('error : ' + error)
+      );
+    } else {
+      console.log('exchange candidate', data);
+      pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+    }
   }
 };
 

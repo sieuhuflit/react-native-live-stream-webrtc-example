@@ -7,6 +7,15 @@ let container;
 let listContainer;
 let listMessages = [];
 let currentType = null;
+let streamerSocketId = null;
+
+const setStreamerSocketId = socketId => {
+  streamerSocketId = socketId;
+};
+
+const getStreamerSocketId = () => {
+  return streamerSocketId;
+};
 
 const setCurrentType = type => {
   currentType = type;
@@ -143,7 +152,9 @@ const Utils = {
   getListContainer,
   setListContainer,
   getCurrentType,
-  setCurrentType
+  setCurrentType,
+  getStreamerSocketId,
+  setStreamerSocketId
 };
 
 export default Utils;
