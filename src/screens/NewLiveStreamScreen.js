@@ -41,7 +41,7 @@ class NewLiveStreamScreen extends Component {
         ? Utils.getOtherStream().toURL()
         : undefined,
       countHeart: 0,
-      listMessages: Utils.getListMessages(),
+      listMessages: [],
       message: ''
     };
   }
@@ -53,28 +53,33 @@ class NewLiveStreamScreen extends Component {
   };
 
   onPressSend = () => {
-    const { message } = this.state;
+    const roomName = this.props.navigation.getParam('roomName');
+    const { message, listMessages } = this.state;
     if (message === '') {
       return;
     }
-    PeerConnectionUtils.broadcastMessage({
-      name: Utils.getRandomUsername(),
-      content: message
-    });
-    Utils.addMessage({ name: Utils.getRandomUsername(), content: message });
+    SocketUtils.emitSendMessage(roomName, Utils.getRandomUsername(), message);
+    const data = {
+      roomId: roomName,
+      displayName: Utils.getRandomUsername(),
+      message,
+      avatar: Utils.getRandomAvatar()
+    };
+    const newListMessages = listMessages.slice();
+    newListMessages.push(data);
     this.setState({
-      listMessages: Utils.getListMessages(),
-      message: ''
+      message: '',
+      listMessages: newListMessages
     });
     Keyboard.dismiss();
   };
 
   onPressHeart = () => {
     const { countHeart } = this.state;
-    this.setState({ countHeart: countHeart + 1 });
-    PeerConnectionUtils.broadcastMessage({
-      name: Utils.getRandomUsername(),
-      content: '#<3'
+    const roomName = this.props.navigation.getParam('roomName');
+    SocketUtils.emitSendMessage(roomName, Utils.getRandomUsername(), '#<3');
+    this.setState({
+      countHeart: countHeart + 1
     });
   };
 
@@ -195,19 +200,20 @@ class NewLiveStreamScreen extends Component {
               this.scrollView.scrollToEnd({ animated: true });
             }}
           >
-            {listMessages.map(item => {
-              return (
-                <View style={styles.chatItem}>
-                  <View style={styles.wrapAvatar}>
-                    <Image source={item.avatar} style={styles.iconAvatar} />
+            {listMessages.length > 0 &&
+              listMessages.map(item => {
+                return (
+                  <View style={styles.chatItem}>
+                    <View style={styles.wrapAvatar}>
+                      <Image source={item.avatar} style={styles.iconAvatar} />
+                    </View>
+                    <View style={styles.messageItem}>
+                      <Text style={styles.name}>{item.displayName}</Text>
+                      <Text style={styles.content}>{item.message}</Text>
+                    </View>
                   </View>
-                  <View style={styles.messageItem}>
-                    <Text style={styles.name}>{item.name}</Text>
-                    <Text style={styles.content}>{item.content}</Text>
-                  </View>
-                </View>
-              );
-            })}
+                );
+              })}
           </ScrollView>
         </View>
       </View>

@@ -33,6 +33,7 @@ const emitListServer = () => {
 const connect = () => {
   socket = io.connect(
     'https://live-stream-webrtc-server.herokuapp.com',
+    // 'http://192.168.10.155:4443',
     { transports: ['websocket'] }
   );
 };
@@ -137,6 +138,33 @@ const handleOnLeaveClient = participant => {
   });
 };
 
+const emitSendMessage = (roomId, displayName, message) => {
+  socket.emit(
+    'send-message',
+    {
+      roomId,
+      displayName,
+      message
+    },
+    data => {}
+  );
+};
+
+const handleOnMessage = () => {
+  socket.on('send-message', data => {
+    if (data.message === '#<3') {
+      const { countHeart } = Utils.getContainer().state;
+      Utils.getContainer().setState({ countHeart: countHeart + 1 });
+    } else {
+      const { listMessages } = Utils.getContainer().state;
+      data.avatar = Utils.getRandomAvatar();
+      const newListMessages = listMessages.slice();
+      newListMessages.push(data);
+      Utils.getContainer().setState({ listMessages: newListMessages });
+    }
+  });
+};
+
 const SocketUtils = {
   getSocket,
   connect,
@@ -149,6 +177,8 @@ const SocketUtils = {
   emitExchangeServerSdp,
   emitExchangeServerCandidate,
   emitListServer,
-  getListServer
+  getListServer,
+  handleOnMessage,
+  emitSendMessage
 };
 export default SocketUtils;

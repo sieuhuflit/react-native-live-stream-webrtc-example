@@ -5,9 +5,9 @@ let localStream;
 let otherStream;
 let container;
 let listContainer;
-let listMessages = [];
 let currentType = null;
 let streamerSocketId = null;
+let randomDisplayName = null;
 
 const setStreamerSocketId = socketId => {
   streamerSocketId = socketId;
@@ -33,9 +33,6 @@ const getListContainer = () => {
   return listContainer;
 };
 
-const getListMessages = () => {
-  return listMessages;
-};
 const getContainer = () => {
   return container;
 };
@@ -58,11 +55,6 @@ const setOtherStream = stream => {
 
 const getOtherStream = () => {
   return otherStream;
-};
-
-const addMessage = data => {
-  data.avatar = getRandomAvatar();
-  listMessages.push(data);
 };
 
 const getRandomAvatar = () => {
@@ -147,14 +139,13 @@ const Utils = {
   getDimensions,
   setOtherStream,
   getOtherStream,
-  getListMessages,
-  addMessage,
   getListContainer,
   setListContainer,
   getCurrentType,
   setCurrentType,
   getStreamerSocketId,
-  setStreamerSocketId
+  setStreamerSocketId,
+  getRandomAvatar
 };
 
 export default Utils;

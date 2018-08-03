@@ -15,6 +15,7 @@ SocketUtils.handleOnExchange();
 SocketUtils.handleOnLeave();
 SocketUtils.handleOnJoinClient();
 SocketUtils.handleOnLeaveClient();
+SocketUtils.handleOnMessage();
 
 // SocketUtils.connect();
 // SocketUtils.handleOnConnect();
