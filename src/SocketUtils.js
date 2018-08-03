@@ -32,7 +32,7 @@ const emitListServer = () => {
 
 const connect = () => {
   socket = io.connect(
-    'http://192.168.10.155:4443',
+    'https://live-stream-webrtc-server.herokuapp.com',
     { transports: ['websocket'] }
   );
 };
