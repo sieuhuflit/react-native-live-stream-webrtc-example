@@ -4,6 +4,18 @@ Server page: http://live-stream-webrtc-server.herokuapp.com
 
 Server github : https://github.com/sieuhuflit/live-stream-webrtc-server
 
+# Update config
+
+```js
+const connect = () => {
+  socket = io.connect(
+    'https://live-stream-webrtc-server.herokuapp.com',
+    // 'http://192.168.10.155:4443',
+    { transports: ['websocket'] }
+  );
+};
+```
+
 # Get started
 
 1.  `npm install`
